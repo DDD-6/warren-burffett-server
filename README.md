@@ -4,5 +4,5 @@
 ## Local Start Guide ⛳️  
 ``` 
 # project clone 
-git clone https://github.com/Wise-Seeding/Wise-Seeding.git 
+git clone https://github.com/DDD-6/warren-burffett-server.git 
 ```

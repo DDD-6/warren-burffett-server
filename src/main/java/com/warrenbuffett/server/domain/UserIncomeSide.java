@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.EAGER;
+
 
 @Entity
 @NoArgsConstructor
@@ -17,8 +19,8 @@ public class UserIncomeSide {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
     @JoinColumn(name = "umi_id")
+    @OneToOne(fetch = EAGER)
     private UserIncomeMain userIncomeMain;
 
     @Enumerated(EnumType.STRING)

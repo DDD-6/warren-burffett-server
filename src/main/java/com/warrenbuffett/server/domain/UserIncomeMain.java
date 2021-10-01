@@ -20,7 +20,7 @@ public class UserIncomeMain extends BaseTime{
     private Long id;
 
     @JoinColumn(name = "user_id")
-//    @ManyToOne(fetch = EAGER)
+    @OneToOne(fetch = EAGER)
     private User user;
 
     @Column

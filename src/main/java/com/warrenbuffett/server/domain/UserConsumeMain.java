@@ -7,6 +7,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.EAGER;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -16,8 +18,8 @@ public class UserConsumeMain extends BaseTime{
     @Id
     private Long id;
 
-    @Column
     @JoinColumn(name = "user_id")
+    @OneToOne(fetch = EAGER)
     private User user;
 
     @Column

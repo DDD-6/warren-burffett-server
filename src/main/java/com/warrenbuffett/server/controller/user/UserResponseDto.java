@@ -11,8 +11,9 @@ import lombok.*;
 public class UserResponseDto {
     private Long id;
     private String user_name;
-    private String password;
     private String email;
+    private String password;
+    private String image;
     private UserOauthType userOauthType;
 
     public UserResponseDto(User user) {

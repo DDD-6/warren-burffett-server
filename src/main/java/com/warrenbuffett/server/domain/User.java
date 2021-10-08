@@ -21,11 +21,14 @@ public class User extends BaseTime{
     @Column(nullable = false)
     private String user_name;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private String image;
 
     @Enumerated(EnumType.STRING)  // 직접 case처리 or enumerated?
     @Column
@@ -33,11 +36,12 @@ public class User extends BaseTime{
 
 
     @Builder
-    public User(final Long id, final String user_name, final String email, final String password, UserOauthType userOauthType) {
+    public User(final Long id, final String user_name, final String email,final String image, final String password, UserOauthType userOauthType) {
         this.id = id;
         this.user_name = user_name;
         this.password = password;
         this.email = email;
+        this.image = image;
         this.userOauthType = userOauthType;
     }
 }

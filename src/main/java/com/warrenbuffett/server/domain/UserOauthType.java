@@ -8,5 +8,6 @@ import lombok.Getter;
 public enum UserOauthType {
     KAKAO,
     NAVER,
-    GOOGLE;
+    GOOGLE,
+    LOCAL;
 }

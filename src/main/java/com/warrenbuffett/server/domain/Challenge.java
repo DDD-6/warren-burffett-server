@@ -30,10 +30,8 @@ public class Challenge {
     @Column(nullable = false)
     private LocalDate end_date;
 
-
     @Column(nullable = false)
     private String goal;
-
 
     @Builder
     public Challenge(final Long id, final String title, final String content,final String goal, final LocalDate start_date, final LocalDate end_date) {

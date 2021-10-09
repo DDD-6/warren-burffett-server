@@ -34,7 +34,6 @@ public class User extends BaseTime{
     @Column
     private UserOauthType userOauthType;
 
-
     @Builder
     public User(final Long id, final String user_name, final String email,final String image, final String password, UserOauthType userOauthType) {
         this.id = id;

@@ -13,7 +13,6 @@ public class UserCreateRequestDto {
     private String password;
     private String email;
     private String image;
-    private UserOauthType userOauthType;
 
     public User toEntity(){
         return User.builder()
@@ -21,7 +20,7 @@ public class UserCreateRequestDto {
                 .email(email)
                 .password(password)
                 .image(image)
-                .userOauthType(userOauthType)
+                .userOauthType(UserOauthType.LOCAL)
                 .build();
     }
 }

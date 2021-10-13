@@ -43,4 +43,10 @@ public class User extends BaseTime{
         this.image = image;
         this.userOauthType = userOauthType;
     }
+
+    public User update(String user_name,String image) {
+        this.user_name = user_name;
+        this.image = image;
+        return this;
+    }
 }

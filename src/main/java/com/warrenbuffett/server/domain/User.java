@@ -27,7 +27,7 @@ public class User extends BaseTime{
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String image;
 
     @Enumerated(EnumType.STRING)  // 직접 case처리 or enumerated?

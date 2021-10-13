@@ -7,6 +7,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.EAGER;
+
 @Entity
 @Getter
 @ToString
@@ -25,6 +27,7 @@ public class Badge {
     private String image;
 
     @JoinColumn(name = "challenge_id")
+    @OneToOne(fetch = EAGER)
     private Challenge challenge;
 
     @Builder

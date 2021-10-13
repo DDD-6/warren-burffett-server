@@ -3,8 +3,6 @@ import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
 import lombok.*;
 
-import javax.management.relation.Role;
-
 @Getter
 @Builder
 @NoArgsConstructor

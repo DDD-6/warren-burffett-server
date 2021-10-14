@@ -10,7 +10,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name="user")
+@Table(name="user_user")
 @Getter
 public class User extends BaseTime{
 

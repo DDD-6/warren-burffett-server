@@ -8,20 +8,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCreateRequestDto {
-    private Long id;
     private String name;
     private String password;
     private String email;
-    private String image;
-    private UserOauthType userOauthType;
 
     public User toEntity(){
         return User.builder()
                 .user_name(name)
                 .email(email)
                 .password(password)
-                .image(image)
-                .userOauthType(userOauthType)
+                .userOauthType(UserOauthType.LOCAL)
                 .build();
     }
 }

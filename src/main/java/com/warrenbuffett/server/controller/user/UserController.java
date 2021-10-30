@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping(value="/user")
+@RequestMapping(value="/api/user")
 public class UserController {
     private final UserService userService;
 
@@ -28,19 +28,24 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDto> createUSer(@RequestBody final UserCreateRequestDto userCreateRequestDto){
-        final User user = userService.searchUser(userCreateRequestDto.toEntity().getId());
-        if(user!=null) return ResponseEntity.ok(
+        try {
+            final User user = userService.searchUser(userCreateRequestDto.toEntity().getId());
+        }catch (Exception e){
+            return ResponseEntity.ok(
+                    new UserResponseDto(userService.createUser(userCreateRequestDto.toEntity()))
+            );
+        }
+        return ResponseEntity.ok(
                 new UserResponseDto(userService.searchUser(userCreateRequestDto.toEntity().getId()))
         );
-        return ResponseEntity.ok(
-                new UserResponseDto(userService.createUser(userCreateRequestDto.toEntity()))
-        );
+
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long userId) {
-        userService.deleteUser(userId);
-        return new ResponseEntity("user deleted", HttpStatus.OK);
+        boolean status = userService.deleteUser(userId);
+        if (status==true) return new ResponseEntity("user deleted", HttpStatus.OK);
+        else return new ResponseEntity("no user",HttpStatus.NO_CONTENT);
     }
 }

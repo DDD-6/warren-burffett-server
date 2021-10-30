@@ -10,7 +10,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString
-@Table(name="user")
+@Table(name="user_user")
 @Getter
 public class User extends BaseTime{
 
@@ -42,5 +42,11 @@ public class User extends BaseTime{
         this.email = email;
         this.image = image;
         this.userOauthType = userOauthType;
+    }
+
+    public User update(String user_name,String image) {
+        this.user_name = user_name;
+        this.image = image;
+        return this;
     }
 }

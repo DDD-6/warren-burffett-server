@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable().headers().frameOptions().disable()
                 .and().authorizeRequests()
-                .antMatchers("/","/oauth2/**","/signin/**","/login/**","/console/**","/h2-console/**")
+                .antMatchers("/","/api/user/**","/oauth2/**","/signin/**","/login/**","/console/**","/h2-console/**")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
@@ -45,6 +45,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .and().logout().logoutSuccessUrl("/")
                 .and().oauth2Login().defaultSuccessUrl("/").userInfoEndpoint().userService(customOAuthUserService);
+
+        // localhost/ - localhost/user[post]
+        // localhost/signin
+        // localhost/api/user
 
     }
 }

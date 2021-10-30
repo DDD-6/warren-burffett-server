@@ -24,6 +24,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public boolean deleteUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user!=null) {

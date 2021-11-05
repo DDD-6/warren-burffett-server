@@ -1,6 +1,7 @@
 package com.warrenbuffett.server.service;
 
 import com.warrenbuffett.server.ServerApplicationTests;
+import com.warrenbuffett.server.controller.user.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
 import com.warrenbuffett.server.repository.UserRepository;
@@ -9,6 +10,9 @@ import org.junit.After;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -21,6 +25,14 @@ public class UserServiceTest extends ServerApplicationTests {
     @After
     public void cleanup() {
         userRepository.deleteAll();
+    }
+
+    @Test
+    public void findAll() {
+        List<UserResponseDto> userList = userService.findAll();
+        for (UserResponseDto user:userList) {
+            System.out.println(user.getUser_name());
+        }
     }
 
     @Test

@@ -1,10 +1,11 @@
-package com.warrenbuffett.server.service;
+package com.warrenbuffett.server.user;
 
 import com.warrenbuffett.server.ServerApplicationTests;
 import com.warrenbuffett.server.controller.user.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
 import com.warrenbuffett.server.repository.UserRepository;
+import com.warrenbuffett.server.service.UserService;
 import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.jupiter.api.Order;

@@ -16,6 +16,7 @@ public class UserCreateRequestDto {
     private String name;
     @NotBlank(message="PASSWORD_IS_MANDATORY")
     private String password;
+    @NotBlank(message="EMAIL_IS_MANDATORY")
     @Email(message = "NOT_VALID_EMAIL")
     private String email;
 

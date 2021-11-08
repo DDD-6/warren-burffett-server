@@ -20,6 +20,7 @@ public class UserController {
     public UserController(final UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> searchUser(@PathVariable final Long userId) {
         User user = userService.searchUser(userId);
@@ -41,7 +42,7 @@ public class UserController {
 //             return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
         }
         try {
-            final User user = userService.searchUser(userCreateRequestDto.toEntity().getId());
+            final User user = userService.searchUserByEmail(userCreateRequestDto.toEntity().getEmail());
         }catch (Exception e){
             return ResponseEntity.ok(
                     new UserResponseDto(userService.createUser(userCreateRequestDto.toEntity()))
@@ -49,7 +50,7 @@ public class UserController {
         }
         // user already exist
         return ResponseEntity.ok(
-                new UserResponseDto(userService.searchUser(userCreateRequestDto.toEntity().getId()))
+                new UserResponseDto(userService.searchUserByEmail(userCreateRequestDto.toEntity().getEmail()))
         );
 
     }
@@ -58,7 +59,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long userId) {
         boolean status = userService.deleteUser(userId);
-        if (status==true) return new ResponseEntity("user deleted", HttpStatus.OK);
-        else return new ResponseEntity("no user",HttpStatus.NO_CONTENT);
+        if (status==true) return new ResponseEntity( HttpStatus.OK);
+        else return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

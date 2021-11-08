@@ -1,4 +1,4 @@
-package com.warrenbuffett.server.controller.user;
+package com.warrenbuffett.server.controller.user.request;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
 import lombok.*;

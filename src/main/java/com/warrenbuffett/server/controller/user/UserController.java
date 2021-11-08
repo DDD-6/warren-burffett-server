@@ -1,5 +1,10 @@
 package com.warrenbuffett.server.controller.user;
 import com.warrenbuffett.server.common.ErrorResponse;
+import com.warrenbuffett.server.controller.JwtTokenProvider;
+import com.warrenbuffett.server.controller.user.request.LoginRequestDto;
+import com.warrenbuffett.server.controller.user.request.UserCreateRequestDto;
+import com.warrenbuffett.server.controller.user.response.LoginResponseDto;
+import com.warrenbuffett.server.controller.user.response.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -60,6 +65,13 @@ public class UserController {
             @PathVariable Long userId) {
         boolean status = userService.deleteUser(userId);
         if (status==true) return new ResponseEntity( HttpStatus.OK);
+        else return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto){
+        LoginResponseDto loginResponseDto = userService.loginUser(loginRequestDto);
+        if (loginResponseDto!=null) return ResponseEntity.ok(loginResponseDto);
         else return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

@@ -42,14 +42,14 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(e -> e.getDefaultMessage()).collect(Collectors.toList());
             // 200 response with 404 status code
-            return ResponseEntity.ok(new ErrorResponse("404", "Validation failure", errors));
+            // return ResponseEntity.ok(new ErrorResponse("404", "Validation failure", errors));
             // 404 request
-//             return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
+             return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
         }
         try {
             final User user = userService.searchUserByEmail(userCreateRequestDto.toEntity().getEmail());
         }catch (Exception e){
-            return ResponseEntity.ok(
+            return ResponseEntity.status(HttpStatus.CREATED).body(
                     new UserResponseDto(userService.createUser(userCreateRequestDto.toEntity()))
             );
         }
@@ -64,7 +64,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long userId) {
         boolean status = userService.deleteUser(userId);
-        if (status==true) return new ResponseEntity( HttpStatus.OK);
+        if (status==true) return new ResponseEntity(HttpStatus.OK);
         else return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

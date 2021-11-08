@@ -4,8 +4,7 @@ import com.warrenbuffett.server.common.exception.CustomJwtRuntimeException;
 import com.warrenbuffett.server.controller.user.UserDto;
 import com.warrenbuffett.server.domain.User;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -13,18 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
-//    @Value("${jwt.secret}")
-//    private String secretKey;
-//    @Value("${jwt.tokenPrefix}")
-//    private String tokenPrefix;
-
-    private String secretKey="secretkey";
-    private String tokenPrefix="Bearer";
-    private final Long expiredTime = 1000 * 60L * 60L * 3L; // 유효기간 3시간
-
+    private final JwtProperties jwtProperties;
 
     public String generateToken(User user) {
         Date now = new Date();
@@ -35,7 +27,7 @@ public class JwtTokenProvider {
                 .setClaims(createClaims(user))
                 .setIssuedAt(now)  // 발급 시간
                 .setExpiration(new Date(now.getTime()+ Duration.ofHours(3).toMillis())) // 유효기간 3시간
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .compact();
     }
 
@@ -43,7 +35,6 @@ public class JwtTokenProvider {
         Map<String, Object> header = new HashMap<>();
         header.put("typ","JWT");
         header.put("alg","HS256"); // 해시 256 암호화
-        header.put("regDate",System.currentTimeMillis());
         return header;
     }
 
@@ -57,7 +48,7 @@ public class JwtTokenProvider {
     private Claims getClaims(String token) {
         try{
             return Jwts.parser()
-                .setSigningKey(secretKey)
+                .setSigningKey(jwtProperties.getSecret())
                 .parseClaimsJws(token)
                 .getBody();
         // 유효한 토큰인지 인증
@@ -82,7 +73,7 @@ public class JwtTokenProvider {
         return (String) getClaims(token).get("email");
     }
 
-    // Security 인가 정보 확인
+    // Security filter 정보 확인
     public UserDto getUserDtoOf(String authorizationHeader) {
         validationAuthorizationHeader(authorizationHeader);
 
@@ -92,12 +83,12 @@ public class JwtTokenProvider {
     }
 
     private void validationAuthorizationHeader(String header) {
-        if (header == null || !header.startsWith(tokenPrefix)) {
+        if (header == null || !header.startsWith(jwtProperties.getTokenPrefix())) {
             throw new IllegalArgumentException();
         }
     }
 
     private String extractToken(String authorizationHeader) {
-        return authorizationHeader.substring(tokenPrefix.length());
+        return authorizationHeader.substring(jwtProperties.getTokenPrefix().length());
     }
 }

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -39,6 +40,7 @@ public class UserService {
 
     @Transactional
     public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

@@ -49,4 +49,8 @@ public class User extends BaseTime{
         this.image = image;
         return this;
     }
+
+    public void setPassword(String encode) {
+        this.password = encode;
+    }
 }

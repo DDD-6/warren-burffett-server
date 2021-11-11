@@ -20,6 +20,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuthUserService customOAuthUserService;
 
+    private static final String[] PUBLIC_URLS = {
+            "/","/api/user/**","/oauth2/**","/signin/**","/login/**",
+            "/console/**","/h2-console/**"
+    };
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -37,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable().headers().frameOptions().disable()
                 .and().authorizeRequests()
-                .antMatchers("/","/api/user/**","/oauth2/**","/signin/**","/login/**","/console/**","/h2-console/**")
+                .mvcMatchers(PUBLIC_URLS)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()

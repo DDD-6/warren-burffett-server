@@ -1,7 +1,7 @@
 package com.warrenbuffett.server.user;
 
 import com.warrenbuffett.server.ServerApplicationTests;
-import com.warrenbuffett.server.controller.user.response.UserResponseDto;
+import com.warrenbuffett.server.controller.dto.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
 import com.warrenbuffett.server.repository.UserRepository;

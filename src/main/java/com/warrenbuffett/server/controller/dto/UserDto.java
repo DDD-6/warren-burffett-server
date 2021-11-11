@@ -1,4 +1,4 @@
-package com.warrenbuffett.server.controller.user;
+package com.warrenbuffett.server.controller.dto;
 import io.jsonwebtoken.Claims;
 import java.util.Collection;
 import java.util.Collections;

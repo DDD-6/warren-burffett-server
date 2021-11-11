@@ -1,11 +1,9 @@
 package com.warrenbuffett.server.jwt;
 
 import com.warrenbuffett.server.controller.dto.TokenDto;
-import com.warrenbuffett.server.controller.dto.UserDto;
 import com.warrenbuffett.server.domain.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -69,42 +67,21 @@ public class JwtTokenProvider {
         return claims;
     }
 
-//    private Claims parseClaims(String token) {
-//        try{
-//            return Jwts.parser()
-//                .setSigningKey(jwtProperties.getSecret())
-//                .parseClaimsJws(token)
-//                .getBody();
-//        } catch (SecurityException e) {
-//            //log.info("Invalid JWT signature.");
-//            throw new CustomJwtRuntimeException();
-//        } catch (MalformedJwtException e) {
-//            //log.info("Invalid JWT token.");
-//            throw new CustomJwtRuntimeException();
-//        } catch (ExpiredJwtException e) {
-//            //log.info("Expired JWT token.");
-//            throw new CustomJwtRuntimeException();
-//        } catch (UnsupportedJwtException e) {
-//            //log.info("Unsupported JWT token.");
-//            throw new CustomJwtRuntimeException();
-//        } catch (IllegalArgumentException e) {
-//            //log.info("JWT token compact of handler are invalid.");
-//            throw new CustomJwtRuntimeException();
-//        }
-//    }
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(token);
             return true;
         // 유효한 토큰인지 인증
         } catch (SecurityException | MalformedJwtException e) {
-//            log.info("잘못된 JWT 서명입니다.");
+//            log.info("Invalid JWT token.");
+        } catch (SignatureException e) {
+//            log.info("Invalid JWT signature.");
         } catch (ExpiredJwtException e) {
-//            log.info("만료된 JWT 토큰입니다.");
+//            log.info("Expired JWT token.");
         } catch (UnsupportedJwtException e) {
-//            log.info("지원되지 않는 JWT 토큰입니다.");
+//            log.info("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
-//            log.info("JWT 토큰이 잘못되었습니다.");
+//            log.info("JWT token compact of handler are invalid.");
         }
         return false;
     }
@@ -118,7 +95,6 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
-        // 토큰 복호화
         Claims claims = parseClaims(accessToken);
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -133,34 +109,5 @@ public class JwtTokenProvider {
         UserDetails principal = new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-    }
-    public String getUserEmailFromToken(String token) {
-        return (String) parseClaims(token).get("email");
-    }
-    public Claims getTokenData(String token) {
-        return parseClaims(token);
-    }
-
-    // Security filter 정보 확인
-    public UserDto getUserDtoOf(String authorizationHeader) {
-        validationAuthorizationHeader(authorizationHeader);
-
-        String token = extractToken(authorizationHeader);
-        System.out.println(token);
-        Claims claims = parseClaims(token);
-        return new UserDto(claims);
-    }
-
-    private void validationAuthorizationHeader(String header) {
-        if (header == null || !header.startsWith(jwtProperties.getTokenPrefix())) {
-//            logger.error("JWT Token is either missing from HTTP header or has been provided in an incorrect format");
-            throw new AuthenticationCredentialsNotFoundException(
-                    "JWT Token is either missing from HTTP header or has been provided in an incorrect format!");
-//            throw new IllegalArgumentException();
-        }
-    }
-
-    private String extractToken(String authorizationHeader) {
-        return authorizationHeader.substring(jwtProperties.getTokenPrefix().length());
     }
 }

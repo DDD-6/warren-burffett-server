@@ -24,15 +24,15 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> getMypageInfo() {
-        return ResponseEntity.ok(new UserResponseDto(userService.getMyInfo()));
+        User user = userService.getMyInfo();
+        if(user==null) { return new ResponseEntity(HttpStatus.BAD_REQUEST); }
+        return ResponseEntity.ok(new UserResponseDto(user));
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> searchUser(@PathVariable final Long userId) {
-        User user = userService.searchUser(userId);
-        if(user!=null) {
-            return ResponseEntity.ok(new UserResponseDto(user));
-        }
+        User user = userService.getUserInfo(userId);
+        if(user!=null) { return ResponseEntity.ok(new UserResponseDto(user)); }
         else return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -41,9 +41,9 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(e -> e.getDefaultMessage()).collect(Collectors.toList());
             // 200 response with 404 status code
-            return ResponseEntity.ok(new ErrorResponse("404", "Validation failure", errors));
+            //return ResponseEntity.ok(new ErrorResponse("404", "Validation failure", errors));
             // 404 request
-//             return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
+            return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
         }
         final User user = userService.searchUserByEmail(userCreateRequestDto.toEntity().getEmail());
         if(user==null) {

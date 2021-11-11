@@ -17,41 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer";
     private final JwtTokenProvider jwtTokenProvider;
 
-//    @Builder
-//    private JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-//        this.jwtTokenProvider = jwtTokenProvider;
-//    }
-//
-//    public static JwtAuthenticationFilter of(JwtTokenProvider jwtTokenProvider) {
-//        return JwtAuthenticationFilter.builder()
-//                .jwtTokenProvider(jwtTokenProvider)
-//                .build();
-//    }
-//
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-//                                    FilterChain filterChain) throws IOException, ServletException {
-//        System.out.println(request.getHeaderNames());
-//        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-//
-//        // header must be "Bearer"
-//        System.out.println("HTTP header="+authorizationHeader);
-//
-//        try {
-//            UserDto user = jwtTokenProvider.getUserDtoOf(authorizationHeader);
-//            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-//                    user,
-//                    "",
-//                    user.getAuthorities()));
-//
-//            filterChain.doFilter(request, response);
-//        } catch (ExpiredJwtException exception) {
-//            logger.error("ExpiredJwtException", exception);
-//        }
-//    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String jwt = resolveToken(request);

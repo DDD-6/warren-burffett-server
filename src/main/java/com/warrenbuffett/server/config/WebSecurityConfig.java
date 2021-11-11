@@ -1,24 +1,29 @@
 package com.warrenbuffett.server.config;
 
 import com.warrenbuffett.server.config.auth.CustomOAuthUserService;
+import com.warrenbuffett.server.jwt.JwtAccessDeniedHandler;
+import com.warrenbuffett.server.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
-import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final CustomOAuthUserService customOAuthUserService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] PUBLIC_URLS = {
             "/","/api/user/**","/oauth2/**","/signin/**","/login/**",
@@ -27,6 +32,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
@@ -47,12 +57,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().exceptionHandling()
                 // 인증 없이 페이지에 접근할 경우 리다이렉트
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and().logout().logoutSuccessUrl("/")
                 .and().oauth2Login().defaultSuccessUrl("/").userInfoEndpoint().userService(customOAuthUserService);
+        httpSecurity.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session 생성x, 사용x
+                // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
+                .and().apply(new JwtSecurityConfig(jwtTokenProvider));
 
-        // localhost/ - localhost/user[post]
-        // localhost/signin
-        // localhost/api/user
 
     }
 }

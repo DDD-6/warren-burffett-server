@@ -1,7 +1,6 @@
 package com.warrenbuffett.server.user;
 
-import com.warrenbuffett.server.controller.user.UserCreateRequestDto;
-import org.hamcrest.MatcherAssert;
+import com.warrenbuffett.server.controller.user.request.UserCreateRequestDto;
 import org.junit.jupiter.api.*;
 
 import javax.validation.ConstraintViolation;

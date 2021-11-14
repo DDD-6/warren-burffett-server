@@ -1,5 +1,10 @@
 package com.warrenbuffett.server.controller.user;
 import com.warrenbuffett.server.common.ErrorResponse;
+import com.warrenbuffett.server.controller.JwtTokenProvider;
+import com.warrenbuffett.server.controller.user.request.LoginRequestDto;
+import com.warrenbuffett.server.controller.user.request.UserCreateRequestDto;
+import com.warrenbuffett.server.controller.user.response.LoginResponseDto;
+import com.warrenbuffett.server.controller.user.response.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -20,6 +25,7 @@ public class UserController {
     public UserController(final UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> searchUser(@PathVariable final Long userId) {
         User user = userService.searchUser(userId);
@@ -40,16 +46,14 @@ public class UserController {
             // 404 request
 //             return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
         }
-        try {
-            final User user = userService.searchUser(userCreateRequestDto.toEntity().getId());
-        }catch (Exception e){
-            return ResponseEntity.ok(
-                    new UserResponseDto(userService.createUser(userCreateRequestDto.toEntity()))
+        final User user = userService.searchUserByEmail(userCreateRequestDto.toEntity().getEmail());
+        if(user==null) {
+            return new ResponseEntity(
+                    new UserResponseDto(userService.createUser(userCreateRequestDto.toEntity())),HttpStatus.CREATED
             );
         }
-        // user already exist
         return ResponseEntity.ok(
-                new UserResponseDto(userService.searchUser(userCreateRequestDto.toEntity().getId()))
+                new UserResponseDto(userService.searchUserByEmail(userCreateRequestDto.toEntity().getEmail()))
         );
 
     }
@@ -58,7 +62,14 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long userId) {
         boolean status = userService.deleteUser(userId);
-        if (status==true) return new ResponseEntity("user deleted", HttpStatus.OK);
-        else return new ResponseEntity("no user",HttpStatus.NO_CONTENT);
+        if (status==true) return new ResponseEntity( HttpStatus.OK);
+        else return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto){
+        LoginResponseDto loginResponseDto = userService.loginUser(loginRequestDto);
+        if (loginResponseDto!=null) return ResponseEntity.ok(loginResponseDto);
+        else return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

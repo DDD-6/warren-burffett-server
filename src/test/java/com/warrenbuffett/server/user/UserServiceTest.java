@@ -1,7 +1,7 @@
 package com.warrenbuffett.server.user;
 
 import com.warrenbuffett.server.ServerApplicationTests;
-import com.warrenbuffett.server.controller.user.UserResponseDto;
+import com.warrenbuffett.server.controller.user.response.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
 import com.warrenbuffett.server.repository.UserRepository;
@@ -39,7 +39,7 @@ public class UserServiceTest extends ServerApplicationTests {
     @Test
     public void create() {
         String name = "test";
-        String email = "test";
+        String email = "test@gmail.com";
         String password = "test";
         String image = "test";
         UserOauthType userOauthType = UserOauthType.KAKAO;
@@ -57,7 +57,7 @@ public class UserServiceTest extends ServerApplicationTests {
 
     @Test
     public void serchById() {
-        User user = userService.searchUser(1L);
+        User user = userService.searchUser(2L);
         MatcherAssert.assertThat(user.getUser_name(),is("test"));
     }
 

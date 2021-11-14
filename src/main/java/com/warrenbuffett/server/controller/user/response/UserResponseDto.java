@@ -1,4 +1,4 @@
-package com.warrenbuffett.server.controller.user;
+package com.warrenbuffett.server.controller.user.response;
 
 import com.warrenbuffett.server.domain.UserOauthType;
 import org.springframework.beans.BeanUtils;

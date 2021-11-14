@@ -24,7 +24,7 @@ public class User extends BaseTime{
     @Column
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String email;
 
     @Column
@@ -48,5 +48,9 @@ public class User extends BaseTime{
         this.user_name = user_name;
         this.image = image;
         return this;
+    }
+
+    public void setPassword(String encode) {
+        this.password = encode;
     }
 }

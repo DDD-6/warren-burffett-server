@@ -111,6 +111,8 @@ public class UserService {
     // 현재 SecurityContext 에 있는 유저 정보 가져오기
     @Transactional(readOnly = true)
     public User getMyInfo() {
+        System.out.println("my info");
+        System.out.println(SecurityUtil.getCurrentMemberId());
         return userRepository.findById(SecurityUtil.getCurrentMemberId()).orElse(null);
     }
 }

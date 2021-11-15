@@ -2,6 +2,7 @@ package com.warrenbuffett.server.jwt;
 
 import com.warrenbuffett.server.controller.dto.TokenDto;
 import com.warrenbuffett.server.domain.User;
+import com.warrenbuffett.server.service.CustomUserDetailService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private final JwtProperties jwtProperties;
+    private final CustomUserDetailService userDetailService;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = Duration.ofHours(9).toMillis(); // 9시간
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     private static final String AUTHORITIES_KEY = "auth";
@@ -31,9 +33,8 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date accessTokenExpiresIn = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken =  Jwts.builder()
-                .setSubject(authentication.getName())
                 .setHeader(createHeader())
-                .claim(AUTHORITIES_KEY,authorities)
+                .setClaims(createClaims(authentication))
                 .setIssuedAt(now)  // 발급 시간
                 .setExpiration(new Date(now.getTime()+ ACCESS_TOKEN_EXPIRE_TIME)) // 유효기간 3시간
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
@@ -59,10 +60,12 @@ public class JwtTokenProvider {
         return header;
     }
 
-    private Map<String, Object> createClaims(User user) { // payload
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("id",user.getId());
+    private Claims createClaims(Authentication authentication) { // payload
+        Claims claims = Jwts.claims().setSubject(authentication.getName());
+        User user = userDetailService.getUser(authentication.getName());
+        claims.put("id",authentication.getName());
         claims.put("email",user.getEmail());
+        claims.put("user_name",user.getUser_name());
         claims.put(AUTHORITIES_KEY,"ROLE_USER");
         return claims;
     }

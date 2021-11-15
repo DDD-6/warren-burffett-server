@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 인증 없이 페이지에 접근할 경우 리다이렉트
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .accessDeniedHandler(jwtAccessDeniedHandler)
-                .and().logout().logoutSuccessUrl("/")
+                .and().logout().logoutUrl("/api/user/logout").logoutSuccessUrl("/")
                 .and().oauth2Login().defaultSuccessUrl("/").userInfoEndpoint().userService(customOAuthUserService);
         httpSecurity.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session 생성x, 사용x

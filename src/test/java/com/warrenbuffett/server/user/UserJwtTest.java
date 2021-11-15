@@ -4,6 +4,7 @@ import com.warrenbuffett.server.ServerApplicationTests;
 import com.warrenbuffett.server.jwt.JwtTokenProvider;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.domain.UserOauthType;
+import com.warrenbuffett.server.service.CustomUserDetailService;
 import io.jsonwebtoken.Claims;
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.CoreMatchers.is;
@@ -11,6 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +20,9 @@ public class UserJwtTest extends ServerApplicationTests {
 
     @Autowired
     private JwtTokenProvider jwtManager;
+
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
 //
 //    @BeforeEach
 //    void setUp() {
@@ -42,5 +47,11 @@ public class UserJwtTest extends ServerApplicationTests {
 //        System.out.println(data);
 //        MatcherAssert.assertThat(email,is("email@naver.com"));
 //    }
+
+    @Test
+    void detailTest(){
+        User user = customUserDetailService.getUser("12");
+        System.out.println(user);
+    }
 }
 

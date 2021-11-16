@@ -1,12 +1,9 @@
 package com.warrenbuffett.server.service;
 
 import com.warrenbuffett.server.common.SecurityUtil;
-import com.warrenbuffett.server.controller.dto.TokenDto;
-import com.warrenbuffett.server.controller.dto.TokenRequestDto;
+import com.warrenbuffett.server.controller.dto.*;
 import com.warrenbuffett.server.domain.RefreshToken;
 import com.warrenbuffett.server.jwt.JwtTokenProvider;
-import com.warrenbuffett.server.controller.dto.LoginRequestDto;
-import com.warrenbuffett.server.controller.dto.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.repository.RefreshTokenRepository;
 import com.warrenbuffett.server.repository.UserRepository;
@@ -38,12 +35,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
     public User searchUser(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        return user;
+        return userRepository.findById(id).orElse(null);
     }
     public User searchUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        return user;
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Transactional
@@ -60,6 +55,12 @@ public class UserService {
             return true;
         }
         return false;
+    }
+    @Transactional
+    public User resetUserPassword(PasswordResetRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElse(null);
+        user.setPassword(passwordEncoder.encode(requestDto.getNewpassword()));
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -111,8 +112,6 @@ public class UserService {
     // 현재 SecurityContext 에 있는 유저 정보 가져오기
     @Transactional(readOnly = true)
     public User getMyInfo() {
-        System.out.println("my info");
-        System.out.println(SecurityUtil.getCurrentMemberId());
         return userRepository.findById(SecurityUtil.getCurrentMemberId()).orElse(null);
     }
 }

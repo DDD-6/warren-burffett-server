@@ -38,8 +38,8 @@ public class UserServiceTest extends ServerApplicationTests {
 
     @Test
     public void create() {
-        String name = "test";
-        String email = "test@gmail.com";
+        String name = "yoojeong";
+        String email = "rachel3486@gmail.com";
         String password = "test";
         String image = "test";
         UserOauthType userOauthType = UserOauthType.KAKAO;

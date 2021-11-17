@@ -37,11 +37,11 @@ public class UserPasswordResetController {
     @GetMapping("/verify/{key}")
     public ResponseEntity getVerify(@PathVariable String key) throws NotFoundException {
         try {
-            userPasswordResetVerifyEmailService.verifyEmail(key);
+            String email = userPasswordResetVerifyEmailService.verifyEmail(key);
             URI redirectUri = new URI("http://localhost:3000/new-password");
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirectUri);
-            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+            return new ResponseEntity(email, httpHeaders, HttpStatus.SEE_OTHER);
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse("404", "Verify failure", "유효하지 않은 인증 링크입니다."));

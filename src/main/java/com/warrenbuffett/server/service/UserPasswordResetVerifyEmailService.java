@@ -36,9 +36,10 @@ public class UserPasswordResetVerifyEmailService{
          sendMail(email,"[WeSave] 비밀번호 재설정 인증메일입니다.",VERIFICATION_LINK+uuid.toString());
 //        sendMail(email,"[WeSave] 비밀번호 재설정 인증메일입니다.",uuid.toString());
     }
-    public void verifyEmail(String key) throws NotFoundException {
+    public String verifyEmail(String key) throws NotFoundException {
         String memberEmail = redisUtil.getData(key);
         if(memberEmail==null) throw new NotFoundException("유효하지 않은 링크입니다.");
         redisUtil.deleteData(key);
+        return memberEmail;
     }
 }

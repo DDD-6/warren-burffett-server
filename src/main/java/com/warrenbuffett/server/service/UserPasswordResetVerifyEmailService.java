@@ -38,8 +38,7 @@ public class UserPasswordResetVerifyEmailService{
     }
     public void verifyEmail(String key) throws NotFoundException {
         String memberEmail = redisUtil.getData(key);
-        User user = userRepository.findByEmail(memberEmail).orElse(null);
-        if(user==null) throw new NotFoundException("멤버가 조회되지않음");
+        if(memberEmail==null) throw new NotFoundException("유효하지 않은 링크입니다.");
         redisUtil.deleteData(key);
     }
 }

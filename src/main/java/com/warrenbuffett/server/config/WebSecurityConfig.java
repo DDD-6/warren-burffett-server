@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -42,9 +43,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
         webSecurity.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .and().ignoring().mvcMatchers("/image/**");
+                .and().ignoring().mvcMatchers("/image/**")
+                .antMatchers(HttpMethod.OPTIONS, "/**");
     }
-
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{

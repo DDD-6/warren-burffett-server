@@ -29,7 +29,7 @@ public class UserPasswordResetController {
             userPasswordResetVerifyEmailService.sendVerificationMail(user.getEmail());
             return new ResponseEntity(HttpStatus.OK);
         }
-        else return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        else return new ResponseEntity(HttpStatus.NO_CONTENT);
 
     }
 

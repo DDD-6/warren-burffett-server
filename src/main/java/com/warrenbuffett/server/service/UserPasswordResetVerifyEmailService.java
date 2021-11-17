@@ -33,8 +33,8 @@ public class UserPasswordResetVerifyEmailService{
         // insert in redis
         redisUtil.setDataExpire(uuid.toString(),email, 60 * 30L);
         // 인증 링크
-        // sendMail(email,"[WeSave] 비밀번호 재설정 인증메일입니다.",VERIFICATION_LINK+uuid.toString());
-        sendMail(email,"[WeSave] 비밀번호 재설정 인증메일입니다.",uuid.toString());
+         sendMail(email,"[WeSave] 비밀번호 재설정 인증메일입니다.",VERIFICATION_LINK+uuid.toString());
+//        sendMail(email,"[WeSave] 비밀번호 재설정 인증메일입니다.",uuid.toString());
     }
     public void verifyEmail(String key) throws NotFoundException {
         String memberEmail = redisUtil.getData(key);

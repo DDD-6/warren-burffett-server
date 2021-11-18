@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and().logout().logoutUrl("/api/user/logout").logoutSuccessUrl("/")
-                .and().oauth2Login().defaultSuccessUrl("/").userInfoEndpoint().userService(customOAuthUserService);
+                .and().oauth2Login().defaultSuccessUrl("http://localhost:3000",true).userInfoEndpoint().userService(customOAuthUserService);
         httpSecurity.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session 생성x, 사용x
                 .and().apply(new JwtSecurityConfig(jwtTokenProvider));

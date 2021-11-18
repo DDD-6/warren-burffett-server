@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] PUBLIC_URLS = {
-            "/","/api/user/**","/oauth2/**","/signin/**","/login/**",
+            "/","/api/user/**","/oauth2/**","/signin/**","/login/**","/signup/**",
             "/console/**","/h2-console/**"
     };
     @Bean

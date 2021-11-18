@@ -20,6 +20,7 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        System.out.println("Oauth req= "+userRequest);
         OAuth2UserService delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
@@ -30,7 +31,7 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
 
         OAuthAttributes attributes = OAuthAttributes.of(registrationId,userNameAttribureName,oAuth2User.getAttributes());
         User user = saveOrUpdate(attributes);
-
+        System.out.println("success");
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(null)),
                 attributes.getAttributes(), attributes.getNameAttributeKey());
     }

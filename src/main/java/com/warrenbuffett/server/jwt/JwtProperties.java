@@ -1,4 +1,4 @@
-package com.warrenbuffett.server.controller;
+package com.warrenbuffett.server.jwt;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

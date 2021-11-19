@@ -1,6 +1,6 @@
 package com.warrenbuffett.server.user;
 
-import com.warrenbuffett.server.controller.user.request.UserCreateRequestDto;
+import com.warrenbuffett.server.controller.dto.UserCreateRequestDto;
 import org.junit.jupiter.api.*;
 
 import javax.validation.ConstraintViolation;

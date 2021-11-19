@@ -3,6 +3,7 @@ import com.warrenbuffett.server.common.ErrorResponse;
 import com.warrenbuffett.server.controller.dto.*;
 import com.warrenbuffett.server.domain.User;
 import com.warrenbuffett.server.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*" , exposedHeaders = "**")
 @RestController
 @RequestMapping(value="/api/user")
 public class UserController {
@@ -63,6 +63,9 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccessControlAllowOrigin("*");
+        httpHeaders.setAccessControlAllowCredentials(true);
         TokenDto loginResponseDto = userService.loginUser(loginRequestDto);
         if (loginResponseDto!=null) return ResponseEntity.ok(loginResponseDto);
         else return new ResponseEntity(HttpStatus.NO_CONTENT);

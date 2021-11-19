@@ -1,14 +1,10 @@
 package com.warrenbuffett.server.service;
 
+import com.warrenbuffett.server.common.RedisUtil;
 import com.warrenbuffett.server.common.SecurityUtil;
-import com.warrenbuffett.server.controller.dto.TokenDto;
-import com.warrenbuffett.server.controller.dto.TokenRequestDto;
-import com.warrenbuffett.server.domain.RefreshToken;
+import com.warrenbuffett.server.controller.dto.*;
 import com.warrenbuffett.server.jwt.JwtTokenProvider;
-import com.warrenbuffett.server.controller.dto.LoginRequestDto;
-import com.warrenbuffett.server.controller.dto.UserResponseDto;
 import com.warrenbuffett.server.domain.User;
-import com.warrenbuffett.server.repository.RefreshTokenRepository;
 import com.warrenbuffett.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,9 +23,9 @@ import java.util.stream.Collectors;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RedisUtil redisUtil;
 
     @Transactional(readOnly = true)
     public List<UserResponseDto> findAll(){
@@ -38,12 +34,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
     public User searchUser(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        return user;
+        return userRepository.findById(id).orElse(null);
     }
     public User searchUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        return user;
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Transactional
@@ -61,6 +55,12 @@ public class UserService {
         }
         return false;
     }
+    @Transactional
+    public User resetUserPassword(PasswordResetRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElse(null);
+        user.setPassword(passwordEncoder.encode(requestDto.getNewpassword()));
+        return userRepository.save(user);
+    }
 
     @Transactional
     public TokenDto loginUser(LoginRequestDto loginRequestDto) {
@@ -72,12 +72,7 @@ public class UserService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         // JWT 토큰 생성
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
-
-        refreshTokenRepository.save(refreshToken);
+        redisUtil.setDataExpire(authentication.getName(),tokenDto.getRefreshToken(), 60 * 30L);
         return tokenDto;
     }
 
@@ -86,20 +81,18 @@ public class UserService {
         if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
         }
-
         // get user ID from Access Token
         Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
 
         // get Refresh Token
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+        String refreshToken = redisUtil.getData(authentication.getName());
+        if (refreshToken==null) throw new RuntimeException("로그아웃 된 사용자입니다.");
+        if (!refreshToken.equals(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
         TokenDto tokenDto = jwtTokenProvider.generateToken(authentication);
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
+        redisUtil.setDataExpire(authentication.getName(),tokenDto.getRefreshToken(), 60 * 30L);
         return tokenDto;
     }
 
@@ -111,8 +104,6 @@ public class UserService {
     // 현재 SecurityContext 에 있는 유저 정보 가져오기
     @Transactional(readOnly = true)
     public User getMyInfo() {
-        System.out.println("my info");
-        System.out.println(SecurityUtil.getCurrentMemberId());
         return userRepository.findById(SecurityUtil.getCurrentMemberId()).orElse(null);
     }
 }

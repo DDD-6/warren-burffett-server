@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  spring-boot:
+    container_name: spring-boot
+    restart: always
+    build: ./server
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+  react:
+    container_name: react
+    image: node:12-alpine
+    command: sh -c "npm install && npm start"
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./react-social:/app
+    networks:
+      - front_network
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    networks:
+      - db_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+    environment:
+      - POSTGRES_USER: test
+      - POSTGRES_DATABASE: postgres
+      - POSTGRES_PASSWORD: 1234
+      - TZ=Asia/Seoul
+  networks:
+    db_network:
+    front_network:

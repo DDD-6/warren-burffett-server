@@ -43,6 +43,6 @@ services:
     hostname: localhost
     ports:
       - "6379:6379"
-  networks:
-    db_network:
-    front_network:
+networks:
+  db_network:
+  front_network:

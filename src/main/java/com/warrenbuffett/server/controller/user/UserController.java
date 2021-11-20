@@ -35,6 +35,10 @@ public class UserController {
         if(user!=null) { return ResponseEntity.ok(new UserResponseDto(user)); }
         else return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserResponseDto> updateUser(@Validated @RequestBody final UserUpdateDto userUpdateDto) {
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
     @PostMapping
     public ResponseEntity<?> createUSer(@Validated @RequestBody final UserCreateRequestDto userCreateRequestDto, BindingResult bindingResult){

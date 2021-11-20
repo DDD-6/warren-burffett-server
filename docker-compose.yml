@@ -3,7 +3,7 @@ services:
   spring-boot:
     container_name: spring-boot
     restart: always
-    build: ./server
+    build: ./warren-burffett-server
     depends_on:
       - postgres
     ports:

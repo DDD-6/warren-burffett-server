@@ -6,6 +6,7 @@ services:
     build: ./warren-burffett-server
     depends_on:
       - postgres
+      - redis
     ports:
       - "8080:8080"
 #  nextjs:

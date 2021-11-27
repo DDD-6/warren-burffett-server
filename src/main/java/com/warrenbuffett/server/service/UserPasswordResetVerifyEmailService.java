@@ -14,7 +14,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class UserPasswordResetVerifyEmailService{
-    private final UserRepository userRepository;
     private final RedisUtil redisUtil;
     @Autowired
     private JavaMailSender emailSender;

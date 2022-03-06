@@ -1,0 +1,49 @@
+version: "3.7"
+services:
+  spring-boot:
+    container_name: spring-boot
+    restart: always
+    build: ./warren-burffett-server
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:8080"
+#  nextjs:
+#    container_name: nextjs
+#    image: node:12-alpine
+#    command: sh -c "npm install && npm start"
+#    ports:
+#      - 3000:3000
+#    working_dir: /app
+#    volumes:
+#      - ./react-social:/app
+#    networks:
+#      - front_network
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    networks:
+      - db_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_PASSWORD=1234
+      - TZ=Asia/Seoul
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    command: redis-server --port 6379
+    hostname: localhost
+    ports:
+      - "6379:6379"
+networks:
+  db_network:
+  front_network:
